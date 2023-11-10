@@ -1,6 +1,7 @@
 import pytest
 import requests
 import helpers
+from constants import Constants
 
 
 @pytest.fixture
@@ -14,9 +15,9 @@ def unregistered_courier():
 
     yield payload
     del payload["firstName"]
-    response = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier/login', data=payload)
+    response = requests.post(Constants.LOGIN_COURIER, data=payload)
     courier_id = response.json()["id"]
-    requests.delete(f'https://qa-scooter.praktikum-services.ru/api/v1/courier/{courier_id}')
+    requests.delete(f'{Constants.CREATE_COURIER}{courier_id}')
 
 
 @pytest.fixture
@@ -28,6 +29,6 @@ def registered_courier():
     }
 
     yield payload
-    response = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier/login', data=payload)
+    response = requests.post(Constants.LOGIN_COURIER, data=payload)
     courier_id = response.json()["id"]
-    requests.delete(f'https://qa-scooter.praktikum-services.ru/api/v1/courier/{courier_id}')
+    requests.delete(f'{Constants.CREATE_COURIER}{courier_id}')

@@ -1,5 +1,6 @@
 import requests
 import allure
+from constants import Constants
 
 
 @allure.feature('Список заказов')
@@ -10,5 +11,5 @@ class TestOrderList:
         'что в тело ответа вернулся список заказов'
     )
     def test_order_list(self):
-        response = requests.get('https://qa-scooter.praktikum-services.ru/api/v1/orders')
+        response = requests.get(Constants.ORDER)
         assert "orders" in response.json() and type(response.json()["orders"]) is list

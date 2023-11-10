@@ -2,6 +2,7 @@ import pytest
 import requests
 import allure
 import helpers
+from constants import Constants
 
 
 @allure.feature('Логин курьера')
@@ -13,7 +14,7 @@ class TestLoginCourier:
     )
     def test_login_courier_success(self, registered_courier):
         payload = registered_courier
-        response = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier/login', data=payload)
+        response = requests.post(Constants.LOGIN_COURIER, data=payload)
         assert response.status_code == 200 and "id" in response.text
 
     @allure.title('Проверка ошибки при авторизации с неверным логином или паролем')
@@ -25,7 +26,7 @@ class TestLoginCourier:
     def test_login_courier_with_invalid_log_or_pass(self, registered_courier, field):
         payload = registered_courier.copy()
         payload[field] += 'invalid'
-        response = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier/login', data=payload)
+        response = requests.post(Constants.LOGIN_COURIER, data=payload)
         assert response.status_code == 404 and response.text == '{"message": "Учетная запись не найдена"}'
 
     @allure.title('Проверка ошибки при авторизации без поля логина или пароля')
@@ -37,7 +38,7 @@ class TestLoginCourier:
     def test_login_courier_no_login_or_no_pass_field(self, registered_courier, field):
         payload = registered_courier.copy()
         del payload[field]
-        response = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier/login', data=payload)
+        response = requests.post(Constants.LOGIN_COURIER, data=payload)
         assert response.status_code == 400 and response.text == '{"message": "Недостаточно данных для входа"}'
 
     @allure.title('Проверка ошибки при авторизации под несуществующим пользователем')
@@ -51,5 +52,5 @@ class TestLoginCourier:
             "login": login,
             "password": password
         }
-        response = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier/login', data=payload)
+        response = requests.post(Constants.LOGIN_COURIER, data=payload)
         assert response.status_code == 404 and response.text == '{"message": "Учетная запись не найдена"}'

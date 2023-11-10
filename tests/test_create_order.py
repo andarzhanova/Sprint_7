@@ -1,6 +1,7 @@
 import pytest
 import requests
 import allure
+from constants import Constants
 
 
 @allure.feature('Создание заказа')
@@ -23,5 +24,5 @@ class TestCreateOrder:
             "comment": "Saske, come back to Konoha",
             "color": color
         }
-        response = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/orders', params=payload)
+        response = requests.post(Constants.ORDER, params=payload)
         assert response.status_code == 201 and "track" in response.text

@@ -2,6 +2,7 @@ import pytest
 import requests
 import allure
 import helpers
+from constants import Constants
 
 
 @allure.feature('Создание курьера')
@@ -13,7 +14,7 @@ class TestCreateCourier:
     )
     def test_create_courier_success(self, unregistered_courier):
         payload = unregistered_courier
-        response = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier', data=payload)
+        response = requests.post(Constants.CREATE_COURIER, data=payload)
         assert response.status_code == 201 and response.text == '{"ok":true}'
 
     @allure.title('Проверка ошибки при создании одинаковых курьеров')
@@ -23,8 +24,8 @@ class TestCreateCourier:
     )
     def test_create_identical_couriers(self, unregistered_courier):
         payload = unregistered_courier
-        requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier', data=payload)
-        response = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier', data=payload)
+        requests.post(Constants.CREATE_COURIER, data=payload)
+        response = requests.post(Constants.CREATE_COURIER, data=payload)
         assert response.status_code == 409 and response.text == '{"message":"Этот логин уже используется"}'
 
     @allure.title('Проверка успешного создания курьера при заполнении обязательных полей')
@@ -35,7 +36,7 @@ class TestCreateCourier:
     def test_create_courier_no_name_field(self, unregistered_courier):
         payload = unregistered_courier
         payload["firstName"] = None
-        response = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier', data=payload)
+        response = requests.post(Constants.CREATE_COURIER, data=payload)
         assert response.status_code == 201 and response.text == '{"ok":true}'
 
     @allure.title('Проверка ошибки при создании курьера без обязательного поля')
@@ -52,6 +53,6 @@ class TestCreateCourier:
             "firstName": firstname
         }
         del payload[field]
-        response = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier', data=payload)
+        response = requests.post(Constants.CREATE_COURIER, data=payload)
         assert response.status_code == 400 and response.text == '{"message":"Недостаточно данных для ' \
                                                                 'создания учетной записи"}'
